@@ -139,13 +139,21 @@ object TemplateApplication {
     }
     Logger.getLogger("org.apache.spark").setLevel(Level.WARN)
 
+    if (args.length > 1) {
+      val maxLength = Integer.parseInt(args(1))
+      filePaths.remove(maxLength, filePaths.length - maxLength)
+    }
 
-    if (args.isEmpty) {
-      val results = new ListBuffer[(String, Long, Any)]()
+    println(s"Doing ${filePaths.length}")
 
-      results += rdd(filePaths)
-      results += datasetLoadedWithCsv(filePaths)
+    if (args.isEmpty || args(0) == "all") {
 
+      for (_ <- 1 to 5) {
+        val results = new ListBuffer[(String, Long, Any)]()
+
+        results += rdd(filePaths)
+        results += datasetLoadedWithCsv(filePaths)
+      }
     }
     else args(0) match {
       case "rdd" => println(rdd(filePaths)._3)
