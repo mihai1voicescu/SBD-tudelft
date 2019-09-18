@@ -146,10 +146,6 @@ object TemplateApplication {
       results += rdd(filePaths)
       results += datasetLoadedWithCsv(filePaths)
 
-      val good = results.head._3 {
-        case _: Array[(String, Int)] => _
-        case ar: Array[Row] => ar.map(case () => )
-      }
     }
     else args(0) match {
       case "rdd" => println(rdd(filePaths)._3)
@@ -157,7 +153,7 @@ object TemplateApplication {
     }
   }
 
-  def datasetLoadedWithCsv(filePaths: ListBuffer[String]): (String, Long, Array[(String, Int)]) = {
+  def datasetLoadedWithCsv(filePaths: ListBuffer[String]): (String, Long, Array[Row]) = {
 
     val spark = SparkSession.builder.appName("Spark Scala Application template").config("spark.master", "local[*]").getOrCreate()
     import spark.implicits._
@@ -182,8 +178,7 @@ object TemplateApplication {
     spark.stop()
 
 
-
-    ("Dataset", time, results.map(row => (row(0), row(1))))
+    ("Dataset", time, results)
   }
 
   def rdd(filePaths: ListBuffer[String]): (String, Long, Array[(String, Int)]) = {
